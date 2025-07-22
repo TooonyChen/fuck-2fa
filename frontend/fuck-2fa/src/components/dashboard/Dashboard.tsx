@@ -210,7 +210,7 @@ export function Dashboard() {
                   No TOTP secrets yet
                 </CardTitle>
                 <CardDescription className="text-xl text-white/60 max-w-md mx-auto">
-                  Click the "Add Secret" button to start managing your two-factor authentication codes
+                  Click the &ldquo;Add Secret&rdquo; button to start managing your two-factor authentication codes
                 </CardDescription>
               </div>
             </CardHeader>

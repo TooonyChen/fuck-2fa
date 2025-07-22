@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Copy, RefreshCw, Share, Trash2, Clock, Zap } from 'lucide-react'
@@ -30,7 +30,7 @@ export function TOTPCard({ secret, onDelete, onShare }: TOTPCardProps) {
   const [copied, setCopied] = useState(false)
 
   // Get TOTP code using Supabase Edge Function
-  const fetchTOTP = async () => {
+  const fetchTOTP = useCallback(async () => {
     setLoading(true)
     try {
       // Get the current session
@@ -99,14 +99,14 @@ export function TOTPCard({ secret, onDelete, onShare }: TOTPCardProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [secret.id])
 
   useEffect(() => {
     fetchTOTP()
     const interval = setInterval(fetchTOTP, 30000) // Refresh every 30 seconds
     
     return () => clearInterval(interval)
-  }, [secret.id])
+  }, [fetchTOTP])
 
   // Countdown
   useEffect(() => {
@@ -121,7 +121,7 @@ export function TOTPCard({ secret, onDelete, onShare }: TOTPCardProps) {
     }, 1000)
 
     return () => clearInterval(countdown)
-  }, [])
+  }, [fetchTOTP])
 
   const copyToClipboard = async () => {
     try {

@@ -36,7 +36,7 @@ export function LoginForm() {
       } else {
         setMessage('Login link has been sent to your email. Please check your email and click the link to login!')
       }
-    } catch (error) {
+    } catch (err) {
       setMessage('Login failed, please try again later')
     } finally {
       setLoading(false)

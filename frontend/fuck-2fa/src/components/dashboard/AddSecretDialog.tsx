@@ -71,8 +71,9 @@ export function AddSecretDialog({ open, onOpenChange, onSuccess }: AddSecretDial
           period: 30,
         })
       }
-    } catch (error) {
-      setError('Add failed, please try again later')
+    } catch (err) {
+      console.error('Failed to add TOTP secret:', err)
+      setError('Failed to add secret, please try again later')
     } finally {
       setLoading(false)
     }
