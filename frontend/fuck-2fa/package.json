@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cf-build": "npm install --legacy-peer-deps && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
