@@ -2,6 +2,8 @@
 
 A sleek, modern TOTP (Time-based One-Time Password) management application with a beautiful dark theme, built with Next.js and Supabase.
 
+Demo: https://fuck-2fa.pages.dev/
+
 ## 🏗 Architecture
 
 ### **Frontend**
