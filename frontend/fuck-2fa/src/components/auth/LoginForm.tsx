@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Mail, Loader2, Shield } from 'lucide-react'
+import { Mail, Loader2, Shield, Github } from 'lucide-react'
 
 export function LoginForm() {
   const [email, setEmail] = useState('')
@@ -44,7 +44,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen login-bg p-4">
+    <div className="min-h-screen login-bg p-4 flex flex-col">
       {/* Background particles */}
       <div className="particles">
         {[...Array(50)].map((_, i) => (
@@ -60,7 +60,8 @@ export function LoginForm() {
         ))}
       </div>
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
+      {/* Main content */}
+      <div className="relative z-10 flex-1 flex items-center justify-center">
         <Card className="w-full max-w-md glass border-white/10 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <div className="mx-auto w-20 h-20 bg-gradient-to-br from-white/20 to-white/5 rounded-2xl flex items-center justify-center border border-white/10">
@@ -71,7 +72,7 @@ export function LoginForm() {
                 🔐 Fuck 2FA
               </CardTitle>
               <CardDescription className="text-white/70 text-base">
-                Login to your TOTP management tool
+                Say Goodbye to Annonying 2FA Mobile Apps!
               </CardDescription>
             </div>
           </CardHeader>
@@ -121,6 +122,24 @@ export function LoginForm() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 pb-6">
+        <div className="text-center space-y-3">
+          <p className="text-white/50 text-sm">
+            Open Source TOTP Management Tool
+          </p>
+          <a
+            href="https://github.com/TooonyChen/fuck-2fa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm transition-colors duration-200 hover:underline"
+          >
+            <Github className="w-4 h-4" />
+            View on GitHub
+          </a>
+        </div>
+      </footer>
     </div>
   )
 } 

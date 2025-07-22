@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "🔐 Fuck 2FA - TOTP Management Tool",
+  title: "🔐 Fuck 2FA",
   description: "A modern TOTP management tool that makes it easy to manage all your two-factor authentication codes.",
 };
 
