@@ -1,6 +1,6 @@
 # 🔐 Fuck 2FA - Modern TOTP Management Tool
 
-I hate the feeling that I am just sitting there and chilling in front of my desktop, and then outlook force me to enable authentication and tell me to get my phone to download the app. So I coded this: A sleek, modern TOTP (Time-based One-Time Password) management web-application, built with Next.js and Supabase.
+I hate the feeling that I am just sitting there and chilling in front of my desktop, and then outlook force me to enable authentication and tell me to get my phone to download the app. So I coded this: **A sleek, modern TOTP (Time-based One-Time Password) management web-application, built with Next.js and Supabase.**
 
 Demo: https://fuck-2fa.pages.dev/
 
