@@ -15,18 +15,34 @@ create table if not exists public.totp_secrets (
   updated_at timestamptz default now()
 );
 
--- Create RLS policies
+-- Drop existing policies first to avoid conflicts
+drop policy if exists "Users can view their own secrets" on public.totp_secrets;
+drop policy if exists "Users can insert their own secrets" on public.totp_secrets;
+drop policy if exists "Users can update their own secrets" on public.totp_secrets;
+drop policy if exists "Users can delete their own secrets" on public.totp_secrets;
+
+-- Recreate RLS policies with better error handling
 create policy "Users can view their own secrets" on public.totp_secrets
-  for select using (auth.uid() = user_id);
+  for select using (
+    auth.uid() is not null and auth.uid() = user_id
+  );
 
 create policy "Users can insert their own secrets" on public.totp_secrets
-  for insert with check (auth.uid() = user_id);
+  for insert with check (
+    auth.uid() is not null and auth.uid() = user_id
+  );
 
 create policy "Users can update their own secrets" on public.totp_secrets
-  for update using (auth.uid() = user_id);
+  for update using (
+    auth.uid() is not null and auth.uid() = user_id
+  ) with check (
+    auth.uid() is not null and auth.uid() = user_id
+  );
 
 create policy "Users can delete their own secrets" on public.totp_secrets
-  for delete using (auth.uid() = user_id);
+  for delete using (
+    auth.uid() is not null and auth.uid() = user_id
+  );
 
 -- Create shared_secrets table for public sharing
 create table if not exists public.shared_secrets (
@@ -40,11 +56,18 @@ create table if not exists public.shared_secrets (
 -- RLS for shared_secrets
 alter table public.shared_secrets enable row level security;
 
+-- Drop existing shared_secrets policies
+drop policy if exists "Anyone can view shared secrets with valid token" on public.shared_secrets;
+drop policy if exists "Users can create shares for their secrets" on public.shared_secrets;
+drop policy if exists "Users can delete their own shares" on public.shared_secrets;
+
+-- Recreate shared_secrets policies
 create policy "Anyone can view shared secrets with valid token" on public.shared_secrets
   for select using (true);
 
 create policy "Users can create shares for their secrets" on public.shared_secrets
   for insert with check (
+    auth.uid() is not null and
     exists (
       select 1 from public.totp_secrets 
       where id = secret_id and user_id = auth.uid()
@@ -53,6 +76,7 @@ create policy "Users can create shares for their secrets" on public.shared_secre
 
 create policy "Users can delete their own shares" on public.shared_secrets
   for delete using (
+    auth.uid() is not null and
     exists (
       select 1 from public.totp_secrets 
       where id = secret_id and user_id = auth.uid()
@@ -78,4 +102,8 @@ drop trigger if exists handle_updated_at on public.totp_secrets;
 create trigger handle_updated_at
   before update on public.totp_secrets
   for each row
-  execute function public.handle_updated_at(); 
+  execute function public.handle_updated_at();
+
+-- Verify RLS is enabled (this should return true)
+-- You can run this in Supabase SQL Editor to check:
+-- select tablename, rowsecurity from pg_tables where tablename = 'totp_secrets'; 

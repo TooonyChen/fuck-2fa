@@ -34,19 +34,32 @@ export function Dashboard() {
   }, [user])
 
   const fetchSecrets = async () => {
+    // Security check: ensure user is authenticated
+    if (!user?.id) {
+      console.error('❌ No authenticated user')
+      setSecrets([])
+      setLoading(false)
+      return
+    }
+
     try {
+      console.log('🔍 Fetching secrets for user:', user.id)
+      
+      // Explicit user ID filter as security measure (in addition to RLS)
       const { data, error } = await supabase
         .from('totp_secrets')
         .select('*')
+        .eq('user_id', user.id)  // 🔒 Explicit user filter
         .order('created_at', { ascending: false })
 
       if (error) {
-        console.error('Failed to fetch secrets:', error)
+        console.error('❌ Failed to fetch secrets:', error)
       } else {
+        console.log(`✅ Fetched ${data?.length || 0} secrets for user ${user.id}`)
         setSecrets(data || [])
       }
     } catch (error) {
-      console.error('Failed to fetch secrets:', error)
+      console.error('❌ Failed to fetch secrets:', error)
     } finally {
       setLoading(false)
     }
@@ -57,26 +70,55 @@ export function Dashboard() {
       return
     }
 
+    // Security check: ensure user is authenticated
+    if (!user?.id) {
+      console.error('❌ No authenticated user for delete operation')
+      alert('Authentication required to delete secret')
+      return
+    }
+
     try {
+      console.log('🗑️ Deleting secret:', id, 'for user:', user.id)
+      
+      // Explicit user ID filter as security measure (in addition to RLS)
       const { error } = await supabase
         .from('totp_secrets')
         .delete()
         .eq('id', id)
+        .eq('user_id', user.id)  // 🔒 Explicit user filter
 
       if (error) {
-        console.error('Delete failed:', error)
+        console.error('❌ Delete failed:', error)
         alert('Delete failed, please try again later')
       } else {
+        console.log('✅ Secret deleted successfully')
         setSecrets(secrets.filter(s => s.id !== id))
       }
     } catch (error) {
-      console.error('Delete failed:', error)
+      console.error('❌ Delete failed:', error)
       alert('Delete failed, please try again later')
     }
   }
 
   const handleShareSecret = async (id: string) => {
+    // Security check: ensure user is authenticated
+    if (!user?.id) {
+      console.error('❌ No authenticated user for share operation')
+      alert('Authentication required to share secret')
+      return
+    }
+
+    // Security check: verify the secret belongs to the current user
+    const secretExists = secrets.find(s => s.id === id)
+    if (!secretExists) {
+      console.error('❌ Secret not found or not owned by user:', id)
+      alert('Secret not found or access denied')
+      return
+    }
+
     try {
+      console.log('🔗 Creating share link for secret:', id, 'by user:', user.id)
+      
       const shareToken = Math.random().toString(36).substring(7)
       const { error } = await supabase
         .from('shared_secrets')
@@ -89,15 +131,16 @@ export function Dashboard() {
         ])
 
       if (error) {
-        console.error('Failed to create share link:', error)
+        console.error('❌ Failed to create share link:', error)
         alert('Failed to create share link, please try again later')
       } else {
+        console.log('✅ Share link created successfully')
         const shareUrl = `${window.location.origin}/share/${shareToken}`
         await navigator.clipboard.writeText(shareUrl)
         alert('Share link has been copied to clipboard! The link will expire in 24 hours.')
       }
     } catch (error) {
-      console.error('Failed to create share link:', error)
+      console.error('❌ Failed to create share link:', error)
       alert('Failed to create share link, please try again later')
     }
   }
