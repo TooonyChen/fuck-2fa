@@ -4,7 +4,7 @@ A sleek, modern TOTP (Time-based One-Time Password) management application with 
 
 Demo: https://fuck-2fa.pages.dev/
 
-Demo is hosted on Cloudflare Pages and my free-play Supabase, all the credentials and secrets are encrypted. If you don't wanna self-host just feel free to use it! But I am not responsible if there is any leakage or loss :/
+Demo is hosted on Cloudflare Pages and my free-plan Supabase, all the credentials and secrets are encrypted. If you don't wanna self-host just feel free to use it! But I am not responsible if there is any leakage or loss :/
 
 ## 🏗 Architecture
 
